@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "iostream"
 #include "string"
+#include "fstream"
+#include "list"
+#include "algorithm"
 
 void print_message(std::string msg)
 {
@@ -48,6 +51,29 @@ int main_menu() {
 		}
 	}
 	return choice_number;
+}
+
+std::fstream& fill_file_with_numbers(int n, int m, std::string filename)
+{
+	std::fstream fout(filename);
+	if (!fout.is_open()) { throw 1; }
+	int random_number;
+	for (auto i = 1; i <= n; ++i) {
+		random_number = std::rand() % (2 * m) - m;
+		fout << random_number << std::endl;
+	}
+	return fout;
+}
+
+std::fstream& fill_file_with_numbers_generate(int n, int m, std::string filename)
+{
+	std::fstream fout(filename);
+	if (!fout.is_open()) { throw 1; }
+	std::list<int> buf_list = std::list<int>(n);
+	std::generate(buf_list.begin, buf_list.end, std::rand() % (2 * m) - m);
+	for (auto it = buf_list.begin; it != buf_list.end; ++it)
+		fout << *it << std::endl;
+	return fout;
 }
 
 
