@@ -141,8 +141,8 @@ int add(int first, int second) {
 	return first + second;
 }
 
-struct functor {
-	functor(int x) : x(x) {}
+struct functor_1 {
+	functor_1(int x) : x(x) {}
 	int operator()(int x1) { return x + x1; }
 
 private:
@@ -160,10 +160,33 @@ std::list<int>& modify_transform(std::list<int> lst) {
 		++it;
 	}
 	if (last_negative == 1) { last_negative = 0; }
-	std::list<int> modifier_list(lst.size(), last_negative);
-	std::transform(lst.begin(), lst.end(), modified_list->begin(), functor(last_negative));
+	std::transform(lst.begin(), lst.end(), modified_list->begin(), functor_1(last_negative));
 	return *modified_list;
 }
+
+struct functor_2 {
+	functor_2(int x) : x(x) {}
+	void operator()(int &x1) { x1 = x + x1; }
+
+private:
+	int x;
+};
+
+std::list<int>& modify_foreach(std::list<int> lst) {
+	std::list<int>* modified_list = new std::list<int>(lst.begin(), lst.end());
+	int last_negative = 1;
+	std::list<int>::reverse_iterator it = lst.rbegin();
+	while ((last_negative == 1) && (it != lst.rend())) {
+		if (*it < 0) {
+			last_negative = *it / 2;
+		}
+		++it;
+	}
+	if (last_negative == 1) { last_negative = 0; }
+	std::for_each(modified_list->begin(), modified_list->end(), functor_2(last_negative));
+	return *modified_list;
+}
+
 
 
 int main()
@@ -175,6 +198,7 @@ int main()
 	std::list<int>& list = fill_container_with_numbers(f1);
 	std::list<int>& modified_list = modify(list);
 	std::list<int>& modified_list_2 = modify_transform(list);
+	std::list<int>& modified_list_3 = modify_foreach(list);
 	std::cout << "Some string" << std::endl;
 	f2.close();
 	std::fstream f("some_buf.txt");
