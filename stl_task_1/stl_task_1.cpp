@@ -141,6 +141,14 @@ int add(int first, int second) {
 	return first + second;
 }
 
+struct functor {
+	functor(int x) : x(x) {}
+	int operator()(int x1) { return x + x1; }
+
+private:
+	int x;
+};
+
 std::list<int>& modify_transform(std::list<int> lst) {
 	std::list<int>* modified_list = new std::list<int>(lst.size());
 	int last_negative = 1;
@@ -153,7 +161,7 @@ std::list<int>& modify_transform(std::list<int> lst) {
 	}
 	if (last_negative == 1) { last_negative = 0; }
 	std::list<int> modifier_list(lst.size(), last_negative);
-	std::transform(lst.begin(), lst.end(), modifier_list.begin(), modified_list->begin(), add);
+	std::transform(lst.begin(), lst.end(), modified_list->begin(), functor(last_negative));
 	return *modified_list;
 }
 
