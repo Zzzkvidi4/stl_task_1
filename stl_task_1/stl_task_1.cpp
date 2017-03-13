@@ -103,6 +103,22 @@ std::list<int>& fill_container_with_numbers(std::fstream& file) {
 	return *list;
 }
 
+std::list<int>& modify(std::list<int> lst) {
+	std::list<int>* modified_list = new std::list<int>(lst.begin(), lst.end());
+	int last_negative = 1;
+	std::list<int>::reverse_iterator it = lst.rbegin();
+	while ((last_negative == 1) && (it != lst.rend())) {
+		if (*it < 0) {
+			last_negative = *it / 2;
+		}
+		++it;
+	}
+	for (std::list<int>::iterator it = modified_list->begin(); it != modified_list->end(); ++it) {
+		*it = *it + last_negative;
+	}
+	return *modified_list;
+}
+
 
 int main()
 {
@@ -111,6 +127,7 @@ int main()
 	std::fstream& f1 = fill_file_with_numbers(5, 4, "some_buf.txt");
 	std::fstream& f2 = fill_file_with_numbers_generate(5, 4, "2.txt");
 	std::list<int>& list = fill_container_with_numbers(f1);
+	std::list<int>& modified_list = modify(list);
 	std::cout << "Some string" << std::endl;
 	f2.close();
 	std::fstream f("some_buf.txt");
