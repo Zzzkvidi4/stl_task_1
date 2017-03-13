@@ -113,6 +113,24 @@ std::list<int>& modify(std::list<int> lst) {
 		}
 		++it;
 	}
+	if (last_negative == 1) { last_negative = 0; }
+	for (std::list<int>::iterator it = modified_list->begin(); it != modified_list->end(); ++it) {
+		*it = *it + last_negative;
+	}
+	return *modified_list;
+}
+
+std::list<int>& modify(std::list<int>::iterator first, std::list<int>::iterator last) {
+	std::list<int>* modified_list = new std::list<int>(first, last);
+	int last_negative = 1;
+	std::list<int>::iterator it = first;
+	while (it != last) {
+		if (*it < 0) {
+			last_negative = *it / 2;
+		}
+		++it;
+	}
+	if (last_negative == 1) { last_negative = 0; }
 	for (std::list<int>::iterator it = modified_list->begin(); it != modified_list->end(); ++it) {
 		*it = *it + last_negative;
 	}
