@@ -53,9 +53,9 @@ int main_menu() {
 	return choice_number;
 }
 
-std::ofstream& fill_file_with_numbers(int n, int m, std::string filename)
+std::fstream& fill_file_with_numbers(int n, int m, std::string filename)
 {
-	std::ofstream* fout = new std::ofstream(filename);
+	std::fstream* fout = new std::fstream(filename, std::fstream::in | std::fstream::out | std::fstream::trunc);
 	if (fout->is_open()) {
 		int random_number;
 		for (int i = 1; i <= n; ++i) {
@@ -66,9 +66,9 @@ std::ofstream& fill_file_with_numbers(int n, int m, std::string filename)
 	return *fout;
 }
 
-std::ofstream& fill_file_with_numbers_generate(int n, int m, std::string filename)
+std::fstream& fill_file_with_numbers_generate(int n, int m, std::string filename)
 {
-	std::ofstream* fout = new std::ofstream(filename);
+	std::fstream* fout = new std::fstream(filename, std::fstream::in | std::fstream::out | std::fstream::trunc);
 	if (fout->is_open()) {
 		std::list<int> buf_list(n);
 		std::generate(buf_list.begin(), buf_list.end(), std::rand);
@@ -83,12 +83,12 @@ int main()
 {
 	setlocale(LC_ALL, "russian");
 	//main_menu();
-	std::ofstream& f1 = fill_file_with_numbers(5, 4, "some.txt");
-	std::ofstream& f2 = fill_file_with_numbers_generate(5, 4, "2.txt");
+	std::fstream& f1 = fill_file_with_numbers(5, 4, "some_buf.txt");
+	std::fstream& f2 = fill_file_with_numbers_generate(5, 4, "2.txt");
 	std::cout << "Some string" << std::endl;
 	f1.close();
 	f2.close();
-	std::ifstream f("some.txt");
+	std::ifstream f("some_buf.txt");
 	int num;
 	if (f.is_open())
 	{
