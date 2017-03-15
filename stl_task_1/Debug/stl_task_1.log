@@ -1,4 +1,9 @@
 ﻿  stl_task_1.cpp
+<<<<<<< HEAD
 e:\work\c++\stl_task_1\stl_task_1\stl_task_1.cpp(60): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 e:\work\c++\stl_task_1\stl_task_1\stl_task_1.cpp(74): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   stl_task_1.vcxproj -> E:\Work\C++\stl_task_1\stl_task_1\Debug\stl_task_1.exe
+=======
+e:\work\c++\stl_task_1\stl_task_1\stl_task_1.cpp(4): error C2859: E:\Work\C++\stl_task_1\stl_task_1\Debug\vc140.pdb is not the pdb file that was used when this precompiled header was created, recreate the precompiled header.
+e:\work\c++\stl_task_1\stl_task_1\stl_task_1.cpp(79): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+>>>>>>> fill_file_feature
