@@ -78,8 +78,7 @@ private:
 	int max;
 };
 
-int Random::operator()(){ 
-	srand(time(NULL)); 
+int Random::operator()(){  
 	return (std::rand()) % (2 * max) - max; 
 }
 
