@@ -7,6 +7,7 @@
 #include "fstream"
 #include "list"
 #include "algorithm"
+#include <time.h>
 
 void print_message(std::string msg)
 {
@@ -66,14 +67,27 @@ std::fstream& fill_file_with_numbers(int n, int m, std::string filename)
 	return *fout;
 }
 
+struct Random {
+public:
+	explicit Random(int m) { max = m; }
+	int operator()();
+private:
+	int max;
+};
+
+int Random::operator()(){ 
+	srand(time(NULL)); 
+	return (std::rand()) % (2 * max) - max; 
+}
+
 std::fstream& fill_file_with_numbers_generate(int n, int m, std::string filename)
 {
 	std::fstream* fout = new std::fstream(filename, std::fstream::in | std::fstream::out | std::fstream::trunc);
 	if (fout->is_open()) {
 		std::list<int> buf_list(n);
-		std::generate(buf_list.begin(), buf_list.end(), std::rand);
+		std::generate(buf_list.begin(), buf_list.end(), Random(m));
 		for (std::list<int>::iterator it = buf_list.begin(); it != buf_list.end(); ++it)
-			*fout << (*it) % (2 * m) - m << std::endl;
+			*fout << *it << std::endl;
 	}
 	return *fout;
 }
@@ -88,7 +102,7 @@ int main()
 	std::cout << "Some string" << std::endl;
 	f1.close();
 	f2.close();
-	std::ifstream f("some_buf.txt");
+	std::ifstream f("2.txt");
 	int num;
 	if (f.is_open())
 	{
