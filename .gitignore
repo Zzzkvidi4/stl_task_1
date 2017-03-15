@@ -28,3 +28,9 @@
 *.exe
 *.out
 *.app
+
+*.pdb
+*.idb
+*.db
+*.log
+*.VC.db
