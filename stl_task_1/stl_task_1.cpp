@@ -15,7 +15,9 @@
 std::string file_name = "";
 std::fstream* file;
 std::list<int>* list;
+/* Задача 10С - к элементам контейнера list добавить половину отрицательного элемента*/
 
+//функция для вывода сообщений
 void print_message(std::string msg)
 {
 	std::cout << msg << std::endl;
@@ -23,6 +25,7 @@ void print_message(std::string msg)
 	system("cls");
 }
 
+//функция для отображения главного меню
 void print_menu()
 {
     system("cls");
@@ -36,6 +39,7 @@ void print_menu()
     if (list == NULL) { std::cout << "Внимание, список не существует! Некоторые действия недоступны!" << std::endl; }
 }
 
+//функция получения одного из вариантов между min и max
 void getChoice(int min, int max, int& choice_number) {
 	std::string choice = "";
 	try {
@@ -56,6 +60,7 @@ void getChoice(int min, int max, int& choice_number) {
 	}
 }
 
+//функция главного меню с возвратом выбора
 int main_menu() {
 	std::string choice = "";
 	int choice_number = -1;
@@ -67,6 +72,7 @@ int main_menu() {
 	return choice_number;
 }
 
+//функция заполнения файла числами с использованием цикла
 std::fstream& fill_file_with_numbers(int n, int m, std::string filename)
 {
 	srand(time(NULL));
@@ -81,6 +87,7 @@ std::fstream& fill_file_with_numbers(int n, int m, std::string filename)
 	return *fout;
 }
 
+//структура для генерации рандомных чисел в диапазоне [-m, m]
 struct Random {
 public:
 	explicit Random(int m) { max = m; }
@@ -93,6 +100,7 @@ int Random::operator()(){
 	return (std::rand()) % (2 * max) - max; 
 }
 
+//заполнение файла числами с использованием generate
 std::fstream& fill_file_with_numbers_generate(int n, int m, std::string filename)
 {
 	srand(time(NULL));
@@ -106,6 +114,7 @@ std::fstream& fill_file_with_numbers_generate(int n, int m, std::string filename
 	return *fout;
 }
 
+//заполнение контейнера из файла
 std::list<int>& fill_container_with_numbers(std::fstream& file) {
 	std::list<int>* list = new std::list<int>();
 	file.clear();
@@ -127,6 +136,7 @@ std::list<int>& fill_container_with_numbers(std::fstream& file) {
 	return *list;
 }
 
+//модификация контейнера
 std::list<int>& modify(std::list<int> lst) {
 	std::list<int>* modified_list = new std::list<int>(lst.begin(), lst.end());
 	int last_negative = 1;
@@ -144,6 +154,7 @@ std::list<int>& modify(std::list<int> lst) {
 	return *modified_list;
 }
 
+//модификация части контейнера... Не решена проблема с передачей самого списка
 std::list<int>& modify(std::list<int> *list, std::list<int>::iterator first, std::list<int>::iterator last) {
 	int last_negative = 1;
 	std::list<int>::iterator it = first;
@@ -170,6 +181,7 @@ std::list<int>& modify(std::list<int> *list, std::list<int>::iterator first, std
 	return *modified_list;
 }
 
+//структура для модификации элементов через transform
 struct functor_1 {
 	functor_1(int x) : x(x) {}
 	int operator()(int x1) { return x + x1; }
@@ -178,6 +190,7 @@ private:
 	int x;
 };
 
+//функция для модификации через transform
 std::list<int>& modify_transform(std::list<int> lst) {
 	std::list<int>* modified_list = new std::list<int>(lst.size());
 	int last_negative = 1;
@@ -193,6 +206,7 @@ std::list<int>& modify_transform(std::list<int> lst) {
 	return *modified_list;
 }
 
+//структура для модификации через for_each
 struct functor_2 {
 	functor_2(int x) : x(x) {}
 	void operator()(int &x1) { x1 = x + x1; }
@@ -201,6 +215,7 @@ private:
 	int x;
 };
 
+//функция для модификации через for_each
 std::list<int>& modify_foreach(std::list<int> lst) {
 	std::list<int>* modified_list = new std::list<int>(lst.begin(), lst.end());
 	int last_negative = 1;
@@ -216,6 +231,7 @@ std::list<int>& modify_foreach(std::list<int> lst) {
 	return *modified_list;
 }
 
+//функция суммирования контейнера
 bool sum_container(std::list<int> list, int& sum) {
     sum = 0;
     std::list<int>::iterator it = list.begin();
@@ -226,6 +242,7 @@ bool sum_container(std::list<int> list, int& sum) {
     return list.size() != 0;
 }
 
+//действие по суммированию контейнера
 void sum_container_action() {
     system("cls");
     int sum;
@@ -237,15 +254,17 @@ void sum_container_action() {
     system("pause");
 }
 
+//вычисление среднего арифмитического контейнера
 bool avg_container(std::list<int> list, float& avg) {
     int sum;
     sum_container(list, sum);
     if (list.size() != 0) {
-        avg /= list.size();
+        avg = float(sum)/float(list.size());
     }
     return list.size() != 0;
 }
 
+//действие по вычислению среднего арифметического
 void avg_container_action() {
     system("cls");
     float avg;
@@ -257,6 +276,7 @@ void avg_container_action() {
     system("pause");
 }
 
+//функция для демонстрация контейнера
 bool show_container(std::list<int> list) {
     if ((list.size() == 0)) {
         return false;
@@ -270,6 +290,7 @@ bool show_container(std::list<int> list) {
     }
 }
 
+//действие для демонстрации контейнера
 void show_container_action() {
     system("cls");
     if (!show_container(*list)) {
@@ -278,6 +299,7 @@ void show_container_action() {
     system("pause");
 }
 
+//функция для получения параметров для заполнения файла
 bool get_fill_params(std::string& file_name, int& size, int& max) {
     std::cout << "Введите имя файла (если файл существует, он будет перезаписан. Пустая строка - отмена.):" << std::endl;
     std::getline(std::cin, file_name);
@@ -297,6 +319,7 @@ bool get_fill_params(std::string& file_name, int& size, int& max) {
     return true;
 }
 
+//действие по заполнению файла
 void fill_file_action() {
     system("cls");
     std::cout << "Выберите один из пунктов меню:" << std::endl;
@@ -312,6 +335,9 @@ void fill_file_action() {
         system("cls");
         int size = -1, max = -1;
         if (get_fill_params(file_name, size, max)) {
+            if (file != NULL) {
+                file->close();
+            }
             file = &fill_file_with_numbers(size, max, file_name);
         }
         break;
@@ -320,6 +346,9 @@ void fill_file_action() {
         system("cls");
         int size = -1, max = -1;
         if (get_fill_params(file_name, size, max)) {
+            if (file != NULL) {
+                file->close();
+            }
             file = &fill_file_with_numbers_generate(size, max, file_name);
         }
         break;
@@ -329,6 +358,7 @@ void fill_file_action() {
 
 }
 
+//действие по заполнению контейнера
 void fill_container_action() {
     if (file_name == "") {
         std::cout << "Введите имя файла (Пустая строка - отмена.):" << std::endl;
@@ -341,6 +371,7 @@ void fill_container_action() {
     list = &fill_container_with_numbers(*file);
 }
 
+//действие по модификации контейнера
 void modify_container_action() {
     system("cls");
     std::cout << "Выберите один из пунктов меню:" << std::endl;
@@ -388,6 +419,7 @@ void modify_container_action() {
     }
 }
 
+//выполнение пунктов меню
 void create_menu_action(int choice) {
 	switch (choice) {
 	    case 1: {
