@@ -116,6 +116,87 @@ std::list<int>& fill_container_with_numbers(std::fstream& file) {
 	return *list;
 }
 
+std::list<int>& modify(std::list<int> lst) {
+	std::list<int>* modified_list = new std::list<int>(lst.begin(), lst.end());
+	int last_negative = 1;
+	std::list<int>::reverse_iterator it = lst.rbegin();
+	while ((last_negative == 1) && (it != lst.rend())) {
+		if (*it < 0) {
+			last_negative = *it / 2;
+		}
+		++it;
+	}
+	if (last_negative == 1) { last_negative = 0; }
+	for (std::list<int>::iterator it = modified_list->begin(); it != modified_list->end(); ++it) {
+		*it = *it + last_negative;
+	}
+	return *modified_list;
+}
+
+std::list<int>& modify(std::list<int>::iterator first, std::list<int>::iterator last) {
+	std::list<int>* modified_list = new std::list<int>(first, last);
+	int last_negative = 1;
+	std::list<int>::iterator it = first;
+	while (it != last) {
+		if (*it < 0) {
+			last_negative = *it / 2;
+		}
+		++it;
+	}
+	if (last_negative == 1) { last_negative = 0; }
+	for (std::list<int>::iterator it = modified_list->begin(); it != modified_list->end(); ++it) {
+		*it = *it + last_negative;
+	}
+	return *modified_list;
+}
+
+struct functor_1 {
+	functor_1(int x) : x(x) {}
+	int operator()(int x1) { return x + x1; }
+
+private:
+	int x;
+};
+
+std::list<int>& modify_transform(std::list<int> lst) {
+	std::list<int>* modified_list = new std::list<int>(lst.size());
+	int last_negative = 1;
+	std::list<int>::reverse_iterator it = lst.rbegin();
+	while ((last_negative == 1) && (it != lst.rend())) {
+		if (*it < 0) {
+			last_negative = *it / 2;
+		}
+		++it;
+	}
+	if (last_negative == 1) { last_negative = 0; }
+	std::transform(lst.begin(), lst.end(), modified_list->begin(), functor_1(last_negative));
+	return *modified_list;
+}
+
+struct functor_2 {
+	functor_2(int x) : x(x) {}
+	void operator()(int &x1) { x1 = x + x1; }
+
+private:
+	int x;
+};
+
+std::list<int>& modify_foreach(std::list<int> lst) {
+	std::list<int>* modified_list = new std::list<int>(lst.begin(), lst.end());
+	int last_negative = 1;
+	std::list<int>::reverse_iterator it = lst.rbegin();
+	while ((last_negative == 1) && (it != lst.rend())) {
+		if (*it < 0) {
+			last_negative = *it / 2;
+		}
+		++it;
+	}
+	if (last_negative == 1) { last_negative = 0; }
+	std::for_each(modified_list->begin(), modified_list->end(), functor_2(last_negative));
+	return *modified_list;
+}
+
+
 
 int main()
 {
@@ -124,6 +205,9 @@ int main()
 	std::fstream& f1 = fill_file_with_numbers(5, 4, "some_buf.txt");
 	std::fstream& f2 = fill_file_with_numbers_generate(5, 4, "2.txt");
 	std::list<int>& list = fill_container_with_numbers(f1);
+	std::list<int>& modified_list = modify(list);
+	std::list<int>& modified_list_2 = modify_transform(list);
+	std::list<int>& modified_list_3 = modify_foreach(list);
 	std::cout << "Some string" << std::endl;
 	f2.close();
 	std::ifstream f("2.txt");	int num;
