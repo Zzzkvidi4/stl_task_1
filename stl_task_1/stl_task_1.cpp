@@ -137,10 +137,6 @@ std::list<int>& modify(std::list<int>::iterator first, std::list<int>::iterator 
 	return *modified_list;
 }
 
-int add(int first, int second) {
-	return first + second;
-}
-
 struct functor_1 {
 	functor_1(int x) : x(x) {}
 	int operator()(int x1) { return x + x1; }
