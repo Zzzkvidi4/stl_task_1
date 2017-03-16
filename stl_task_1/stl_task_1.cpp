@@ -9,11 +9,11 @@
 
 std::string file_name = "";
 std::fstream* file;
-std::list<int>* list;
+
 /* Задача 10С - к элементам контейнера list добавить половину последнего отрицательного элемента*/
 
 //функция для отображения главного меню
-void print_menu()
+void print_menu(std::list<double> list)
 {
     system("cls");
 	std::cout << "1. Заполнение текстового файла числами" << std::endl;
@@ -23,64 +23,52 @@ void print_menu()
 	std::cout << "5. Среднее арифметическое" << std::endl;
 	std::cout << "6. Вывод" << std::endl;
 	std::cout << "0. Выход" << std::endl;
-    if (list == NULL) { std::cout << "Внимание, список не существует! Некоторые действия недоступны!" << std::endl; }
+    if (list.size() == 0) { std::cout << "Внимание, список не существует! Некоторые действия недоступны!" << std::endl; }
 }
 
 //функция главного меню с возвратом выбора
-int main_menu() {
+int main_menu(std::list<double> list) {
 	std::string choice = "";
 	int choice_number = -1;
 	while ((choice_number < 0) || (choice_number > 7))
 	{
-		print_menu();
+		print_menu(list);
 		getChoice(0, 7, choice_number);
 	}
 	return choice_number;
 }
 
 //действие по суммированию контейнера
-void sum_container_action() {
+void sum_container_action(std::list<double> list) {
     system("cls");
-    int sum;
-    if (!sum_container(*list, sum)) {
+    if (list.size() == 0) {
         std::cout << "Контейнер пуст." << std::endl;
     } else {
-        std::cout << "Сумма чисел в контейнере = " << sum << std::endl;
+        show_container(list);
+        std::cout << "Сумма чисел в контейнере = " << sum_container(list) << std::endl;
     }
     system("pause");
 }
 
 //действие по вычислению среднего арифметического
-void avg_container_action() {
+void avg_container_action(std::list<double> list) {
     system("cls");
-    float avg;
-    if (avg_container(*list, avg)) {
-        std::cout << "Среднее арифметическое элементов контейнера = " << avg << std::endl;
+    if (list.size() == 0) {
+        std::cout << "Контейнер пуст." << std::endl;
     } else {
-        std::cout << "" << std::endl;
+        show_container(list);
+        std::cout << "Среднее арифметическое чисел в контейнере = " << avg_container(list) << std::endl;
     }
     system("pause");
 }
 
-//функция для демонстрация контейнера
-bool show_container(std::list<int> list) {
-    if ((list.size() == 0)) {
-        return false;
-    } else {
-        std::list<int>::iterator it = list.begin();
-        while (it != list.end()) {
-            std::cout << *it << std::endl;
-            ++it;
-        }
-        return true;
-    }
-}
-
 //действие для демонстрации контейнера
-void show_container_action() {
+void show_container_action(std::list<double> list) {
     system("cls");
-    if (!show_container(*list)) {
+    if (list.size() == 0) {
         std::cout << "Контейнер пуст!" << std::endl;
+    } else {
+        show_container(list);
     }
     system("pause");
 }
@@ -125,7 +113,7 @@ void fill_file_action() {
 }
 
 //действие по заполнению контейнера
-void fill_container_action() {
+void fill_container_action(std::list<double>& list) {
     if (file_name == "") {
         std::cout << "Введите имя файла (Пустая строка - отмена.):" << std::endl;
         std::getline(std::cin, file_name);
@@ -134,11 +122,12 @@ void fill_container_action() {
         }
         file = new std::fstream(file_name, std::fstream::in | std::fstream::out);
     }
-    list = &fill_container_with_numbers(*file);
+    if (list.size() != 0) { list.clear(); }
+    list = fill_container_with_numbers(*file);
 }
 
 //действие по модификации контейнера
-void modify_container_action() {
+void modify_container_action(std::list<double> list) {
     system("cls");
     std::cout << "Выберите один из пунктов меню:" << std::endl;
     std::cout << "1. Модификация через modify(list)." << std::endl;
@@ -150,66 +139,78 @@ void modify_container_action() {
     while ((choice_number < 0) || (choice_number > 4)) {
         getChoice(0, 4, choice_number);
     }
-    switch (choice_number) {
-    case 1: {
-        *list = modify(*list);
-        break;
-    }
-    case 2: {
-        int size = list->size();
-        std::cout << "Введите позицию начала изменения от 1 до " + std::to_string(size) << std::endl;
-        int begin = -1;
-        getChoice(1, size, begin);
-        std::cout << "Введите позицию конца изменения от " + std::to_string(begin) + " до " + std::to_string(size) << std::endl;
-        int end = -1;
-        getChoice(begin, size, end);
-        std::list<int>::iterator first, last, it = list->begin();
-        int i = 1;
-        while (i <= end) {
-            if (i == begin) { first = it; }
-            if (i == end) { last = it; }
-            ++i;
-            ++it;
+    std::cout << "Контейнер до модификации:" << std::endl;
+    show_container(list);
+    std::cout << "Контейнер после модификации:" << std::endl;
+    std::list<double> modified_list(list);
+    try {
+        switch (choice_number) {
+        case 1: {
+            modify(modified_list);
+            break;
         }
-        *list = modify(*list, first, last);
-        break;
+        case 2: {
+            int size = modified_list.size();
+            std::cout << "Введите позицию начала изменения от 1 до " + std::to_string(size) << std::endl;
+            int begin = -1;
+            getChoice(1, size, begin);
+            std::cout << "Введите позицию конца изменения от " + std::to_string(begin) + " до " + std::to_string(size) << std::endl;
+            int end = -1;
+            getChoice(begin, size, end);
+            std::list<double>::iterator first, last, it = modified_list.begin();
+            int i = 1;
+            while (i <= end) {
+                if (i == begin) { first = it; }
+                if (i == end) { last = it; }
+                ++i;
+                ++it;
+            }
+            modify(modified_list, first, last);
+            break;
+        }
+        case 3: {
+            modify_transform(modified_list);
+            break;
+        }
+        case 4: {
+            modify_foreach(modified_list);
+            break;
+        }
+        default: {break; }
+        }
     }
-    case 3: {
-        *list = modify_transform(*list);
-        break;
+    catch (std::exception e) {
+        std::cout << e.what() << std::endl;
     }
-    case 4: {
-        *list = modify_foreach(*list);
-        break;
-    }
-    }
+    show_container(modified_list);
+    system("pause");
 }
 
 //выполнение пунктов меню
-void create_menu_actions(int choice) {
+void create_menu_actions(int choice, std::list<double>& list) {
 	switch (choice) {
 	    case 1: {
             fill_file_action();
             break;
 	    }
         case 2: {
-            fill_container_action();
+            fill_container_action(list);
             break;
         }
         case 3: {
-            if (list != NULL) modify_container_action();
+            if (list.size() != 0) modify_container_action(list);
             break;
         }
         case 4: {
-            if (list != NULL) sum_container_action();
+            if (list.size() != 0) sum_container_action(list);
             break;
         }
         case 5: {
-            if (list != NULL) avg_container_action();
+            if (list.size() != 0) avg_container_action(list);
             break;
         }
         case 6: {
-            if (list != NULL) show_container_action();
+            if (list.size() != 0) show_container_action(list);
             break;
         }
         default: {break; }
@@ -218,11 +219,12 @@ void create_menu_actions(int choice) {
 
 int main()
 {
+    std::list<double> list;
 	setlocale(LC_ALL, "russian");
     int choice_number = -1;
     while (choice_number != 0) {
-        choice_number = main_menu();
-        create_menu_actions(choice_number);
+        choice_number = main_menu(list);
+        create_menu_actions(choice_number, list);
     }
     if (file != NULL) {
         file->close();

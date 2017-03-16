@@ -2,8 +2,8 @@
 #include "list_utils.h"
 
 //заполнение контейнера из файла
-std::list<int>& fill_container_with_numbers(std::fstream& file) {
-    std::list<int>* list = new std::list<int>();
+std::list<double>& fill_container_with_numbers(std::fstream& file) {
+    std::list<double>* list = new std::list<double>();
     file.clear();
     file.seekg(0);
     if (file.is_open())
@@ -15,7 +15,7 @@ std::list<int>& fill_container_with_numbers(std::fstream& file) {
             std::getline(file, line);
             try {
                 num = std::stoi(line);
-                list->push_back(num);
+                list->push_back(double(num));
             }
             catch (std::exception e) {}
         }
@@ -23,118 +23,96 @@ std::list<int>& fill_container_with_numbers(std::fstream& file) {
     return *list;
 }
 
-//модификация контейнера
-std::list<int>& modify(std::list<int> lst) {
-    std::list<int>* modified_list = new std::list<int>(lst.begin(), lst.end());
-    int last_negative = 1;
-    std::list<int>::reverse_iterator it = lst.rbegin();
-    while ((last_negative == 1) && (it != lst.rend())) {
+//функция по получению последнего отрицательного числа
+double get_last_negative(std::list<double>::iterator first, std::list<double>::iterator last) {
+    double neg = 0;
+    for (std::list<double>::iterator it = first; it != last; ++it) {
         if (*it < 0) {
-            last_negative = *it / 2;
+            neg = *it;
         }
-        ++it;
     }
-    if (last_negative == 1) { last_negative = 0; }
-    for (std::list<int>::iterator it = modified_list->begin(); it != modified_list->end(); ++it) {
+    return neg;
+}
+
+//модификация контейнера
+void modify(std::list<double>& list) {
+    double last_negative = get_last_negative(list.begin(), list.end()) / 2;
+    if (last_negative == 0) { throw std::exception("В контейнера нет отрицательных чисел."); }
+    for (std::list<double>::iterator it = list.begin(); it != list.end(); ++it) {
         *it = *it + last_negative;
     }
-    return *modified_list;
 }
 
 //модификация части контейнера
-std::list<int>& modify(std::list<int> &list, std::list<int>::iterator first, std::list<int>::iterator last) {
-    int last_negative = 1;
-    std::list<int>::iterator it = first;
-    while (it != last) {
-        if (*it < 0) {
-            last_negative = *it / 2;
-        }
-        ++it;
+void modify(std::list<double>& list, std::list<double>::iterator first, std::list<double>::iterator last) {
+    double last_negative = get_last_negative(first, last) / 2;
+    if (last_negative == 0) { throw std::exception("В контейнера нет отрицательных чисел."); }
+    for (std::list<double>::iterator it = first; it != last; ++it) {
+        *it = *it + last_negative;
     }
-    if (last_negative == 1) { last_negative = 0; }
-    std::list<int>* modified_list = new std::list<int>(list);
-    std::list<int>::iterator it1 = modified_list->begin(), it2 = list.begin();
-    bool change = false;
-    while (it2 != last) {
-        if (!change) {
-            change = it2 == first;
-        }
-        if (change) {
-            *it1 = *it1 + last_negative;
-        }
-        ++it1;
-        ++it2;
-    }
-    return *modified_list;
 }
 
 //структура для модификации элементов через transform
-struct functor_1 {
-    functor_1(int x) : x(x) {}
-    int operator()(int x1) { return x + x1; }
+struct transform_functor {
+    transform_functor(double last_neg) : last_neg(last_neg) {}
+    double operator()(double x1) { return last_neg + x1; }
 
 private:
-    int x;
+    double last_neg;
 };
 
 //функция для модификации через transform
-std::list<int>& modify_transform(std::list<int> lst) {
-    std::list<int>* modified_list = new std::list<int>(lst.size());
-    int last_negative = 1;
-    std::list<int>::reverse_iterator it = lst.rbegin();
-    while ((last_negative == 1) && (it != lst.rend())) {
-        if (*it < 0) {
-            last_negative = *it / 2;
-        }
-        ++it;
-    }
-    if (last_negative == 1) { last_negative = 0; }
-    std::transform(lst.begin(), lst.end(), modified_list->begin(), functor_1(last_negative));
-    return *modified_list;
+void modify_transform(std::list<double>& list) {
+    double last_negative = get_last_negative(list.begin(), list.end()) / 2;
+    if (last_negative == 0) { throw std::exception("В контейнера нет отрицательных чисел."); }
+    std::transform(list.begin(), list.end(), list.begin(), transform_functor(last_negative));
 }
 
 //структура для модификации через for_each
-struct functor_2 {
-    functor_2(int x) : x(x) {}
-    void operator()(int &x1) { x1 = x + x1; }
+struct foreach_functor {
+    foreach_functor(double last_neg) : last_neg(last_neg) {}
+    void operator()(double &x1) { x1 = last_neg + x1; }
 
 private:
-    int x;
+    double last_neg;
 };
 
 //функция для модификации через for_each
-std::list<int>& modify_foreach(std::list<int> lst) {
-    std::list<int>* modified_list = new std::list<int>(lst.begin(), lst.end());
-    int last_negative = 1;
-    std::list<int>::reverse_iterator it = lst.rbegin();
-    while ((last_negative == 1) && (it != lst.rend())) {
-        if (*it < 0) {
-            last_negative = *it / 2;
-        }
-        ++it;
-    }
-    if (last_negative == 1) { last_negative = 0; }
-    std::for_each(modified_list->begin(), modified_list->end(), functor_2(last_negative));
-    return *modified_list;
+void modify_foreach(std::list<double>& list) {
+    double last_negative = get_last_negative(list.begin(), list.end()) / 2;
+    if (last_negative == 0) { throw std::exception("В контейнера нет отрицательных чисел."); }
+    std::for_each(list.begin(), list.end(), foreach_functor(last_negative));
 }
 
 //функция суммирования контейнера
-bool sum_container(std::list<int> list, int& sum) {
-    sum = 0;
-    std::list<int>::iterator it = list.begin();
+double sum_container(std::list<double> list) {
+    double sum = 0;
+    std::list<double>::iterator it = list.begin();
     while (it != list.end()) {
         sum += *it;
         ++it;
     }
-    return list.size() != 0;
+    return sum;
 }
 
 //вычисление среднего арифмитического контейнера
-bool avg_container(std::list<int> list, float& avg) {
-    int sum;
-    sum_container(list, sum);
+double avg_container(std::list<double> list) {
+    double avg = 0;
     if (list.size() != 0) {
-        avg = float(sum) / float(list.size());
+        avg = sum_container(list) / list.size();
     }
-    return list.size() != 0;
+    return avg;
+}
+
+//функция для демонстрация контейнера
+void show_container(std::list<double> list) {
+    std::list<double>::iterator it = list.begin();
+    while (it != list.end()) {
+        if (it != list.begin()) {
+            std::cout << ", ";
+        }
+        std::cout << *it;
+        ++it;
+    }
+    std::cout << std::endl;
 }

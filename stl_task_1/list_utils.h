@@ -1,22 +1,25 @@
 #pragma once
 
 //заполнение контейнера из файла
-std::list<int>& fill_container_with_numbers(std::fstream& file);
+std::list<double>& fill_container_with_numbers(std::fstream& file);
 
 //модификация контейнера
-std::list<int>& modify(std::list<int> lst);
+void modify(std::list<double>& list);
 
 //модификация части контейнера
-std::list<int>& modify(std::list<int> &list, std::list<int>::iterator first, std::list<int>::iterator last);
+void modify(std::list<double>& list, std::list<double>::iterator first, std::list<double>::iterator last);
 
 //функция для модификации через transform
-std::list<int>& modify_transform(std::list<int> lst);
+void modify_transform(std::list<double>& list);
 
 //функция для модификации через for_each
-std::list<int>& modify_foreach(std::list<int> lst);
+void modify_foreach(std::list<double>& list);
 
 //функция суммирования контейнера
-bool sum_container(std::list<int> list, int& sum);
+double sum_container(std::list<double> list);
 
 //вычисление среднего арифмитического контейнера
-bool avg_container(std::list<int> list, float& avg);
+double avg_container(std::list<double> list);
+
+//функция для демонстрация контейнера
+void show_container(std::list<double> list);

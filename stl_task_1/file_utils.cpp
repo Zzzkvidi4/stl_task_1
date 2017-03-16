@@ -8,9 +8,9 @@ std::fstream& fill_file_with_numbers(int n, int m, std::string filename)
     srand(time(NULL));
     std::fstream* fout = new std::fstream(filename, std::fstream::in | std::fstream::out | std::fstream::trunc);
     if (fout->is_open()) {
-        int random_number;
+        double random_number;
         for (int i = 1; i <= n; ++i) {
-            random_number = std::rand() % (2 * m) - m;
+            random_number = double(std::rand() % (2 * m) - m);
             *fout << random_number << std::endl;
         }
     }
@@ -20,14 +20,14 @@ std::fstream& fill_file_with_numbers(int n, int m, std::string filename)
 //структура для генерации рандомных чисел в диапазоне [-m, m]
 struct Random {
 public:
-    explicit Random(int m) { max = m; }
-    int operator()();
+    Random(int m) { max = m; }
+    double operator()();
 private:
     int max;
 };
 
-int Random::operator()() {
-    return (std::rand()) % (2 * max) - max;
+double Random::operator()() {
+    return double((std::rand()) % (2 * max) - max);
 }
 
 //заполнение файла числами с использованием generate
@@ -36,9 +36,9 @@ std::fstream& fill_file_with_numbers_generate(int n, int m, std::string filename
     srand(time(NULL));
     std::fstream* fout = new std::fstream(filename, std::fstream::in | std::fstream::out | std::fstream::trunc);
     if (fout->is_open()) {
-        std::list<int> buf_list(n);
+        std::list<double> buf_list(n);
         std::generate(buf_list.begin(), buf_list.end(), Random(m));
-        for (std::list<int>::iterator it = buf_list.begin(); it != buf_list.end(); ++it)
+        for (std::list<double>::iterator it = buf_list.begin(); it != buf_list.end(); ++it)
             *fout << *it << std::endl;
     }
     return *fout;
