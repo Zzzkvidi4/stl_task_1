@@ -6,7 +6,6 @@ void print_message(std::string msg)
 {
     std::cout << msg << std::endl;
     system("pause");
-    system("cls");
 }
 
 //функция получения одного из вариантов между min и max

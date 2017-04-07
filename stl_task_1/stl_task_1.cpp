@@ -109,7 +109,8 @@ void fill_file_action() {
     }
     default: break;
     }
-
+	file->close();
+	file_name = "";
 }
 
 //действие по заполнению контейнера
@@ -124,6 +125,8 @@ void fill_container_action(std::list<double>& list) {
     }
     if (list.size() != 0) { list.clear(); }
     list = fill_container_with_numbers(*file);
+	file->close();
+	file_name = "";
 }
 
 //действие по модификации контейнера
@@ -151,19 +154,24 @@ void modify_container_action(std::list<double> list) {
         }
         case 2: {
             int size = modified_list.size();
-            std::cout << "¬ведите позицию начала изменени€ от 1 до " + std::to_string(size) << std::endl;
             int begin = -1;
-            getChoice(1, size, begin);
-            std::cout << "¬ведите позицию конца изменени€ от " + std::to_string(begin) + " до " + std::to_string(size) << std::endl;
+			while ((begin < 1) || (begin > size)) {
+				std::cout << "¬ведите позицию начала изменени€ от 1 до " + std::to_string(size) << std::endl;
+				getChoice(1, size, begin);
+			}
+            
             int end = -1;
-            getChoice(begin, size, end);
+			while ((end <= begin) || (end > size + 1)) {
+				std::cout << "¬ведите позицию конца изменени€ от " + std::to_string(begin + 1) + " до " + std::to_string(size + 1) << std::endl;
+				getChoice(begin + 1, size + 1, end);
+			}
             std::list<double>::iterator first, last, it = modified_list.begin();
             int i = 1;
             while (i <= end) {
                 if (i == begin) { first = it; }
                 if (i == end) { last = it; }
                 ++i;
-                ++it;
+				if (it != modified_list.end()) { ++it; }
             }
             modify(modified_list, first, last);
             break;
