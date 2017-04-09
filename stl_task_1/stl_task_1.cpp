@@ -161,15 +161,15 @@ void modify_container_action(std::list<double> list) {
 			}
             
             int end = -1;
-			while ((end <= begin) || (end > size + 1)) {
-				std::cout << "¬ведите позицию конца изменени€ от " + std::to_string(begin + 1) + " до " + std::to_string(size + 1) << std::endl;
-				getChoice(begin + 1, size + 1, end);
+			while ((end < begin) || (end > size)) {
+				std::cout << "¬ведите позицию конца изменени€ от " + std::to_string(begin) + " до " + std::to_string(size) << std::endl;
+				getChoice(begin, size, end);
 			}
             std::list<double>::iterator first, last, it = modified_list.begin();
             int i = 1;
             while (i <= end) {
                 if (i == begin) { first = it; }
-                if (i == end) { last = it; }
+                if (i == end) { last = ++it; }
                 ++i;
 				if (it != modified_list.end()) { ++it; }
             }
