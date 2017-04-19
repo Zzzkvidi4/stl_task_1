@@ -28,3 +28,13 @@ void getChoice(int min, int max, int& choice_number) {
         print_message("Выход за границы типа!");
     }
 }
+
+bool input_query(std::string str) {
+	std::cout << str << std::endl;
+	std::string buf;
+	std::getline(std::cin, buf);
+	if ((buf.length() != 0) && ((buf[0] == 'y') || (buf[0] == 'Y'))) {
+		return true;
+	}
+	return false;
+}

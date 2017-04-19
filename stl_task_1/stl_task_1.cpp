@@ -191,7 +191,22 @@ void modify_container_action(std::list<double> list) {
         std::cout << e.what() << std::endl;
     }
     show_container(modified_list);
-    system("pause");
+	if (input_query("Сохранить результат в файл? (Y/N) (N):")) {
+		std::string filename;
+		std::cout << "Введите имя файла (пустая строка - отмена):" << std::endl;
+		std::getline(std::cin, filename);
+		if (filename != "") {
+			std::ofstream fout(filename);
+			if (fout.is_open()) {
+				for (auto it = modified_list.begin(); it != modified_list.end(); ++it) {
+					if (it != modified_list.begin()) {
+						fout << std::endl;
+					}
+					fout << *it;
+				}
+			}
+		}
+	}
 }
 
 //выполнение пунктов меню
